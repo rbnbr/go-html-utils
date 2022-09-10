@@ -1,0 +1,4 @@
+github.com/rbnbr/go-utility v0.0.0-20220910142124-3a795e522d64 h1:VC0eYoD6tF6nG+1YsTrpU8TUWyOcxODOgdj0sIFeo/k=
+github.com/rbnbr/go-utility v0.0.0-20220910142124-3a795e522d64/go.mod h1:yXxdYrsoZso4y7av6kv1dnp4+9jN4H+CsYWLr9AeEUo=
+golang.org/x/net v0.0.0-20220909164309-bea034e7d591 h1:D0B/7al0LLrVC8aWF4+oxpv/m8bc7ViFfVS8/gXGdqI=
+golang.org/x/net v0.0.0-20220909164309-bea034e7d591/go.mod h1:YDH+HFinaLZZlnHAfSS6ZXJJ9M9t4Dl22yv3iI2vPwk=
