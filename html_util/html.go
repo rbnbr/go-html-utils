@@ -407,6 +407,7 @@ func ParseHtmlTable(tableNode *html.Node, hasHeaderRow bool, hasIndexColumn bool
 // Content is set after normalizing with normalizerFunc
 // we append '{postfix}_{keyCount}' to keys which appear multiple times to make them unique.
 // the first occurrence does not have this.
+// TODO: describe the meaning of allowCompositeTexts and compositeDelimiter parameters
 func ParseHtmlTableWithNormalizer(tableNode *html.Node, hasHeaderRow bool, hasIndexColumn bool, postfix string, normalizerFunc func(string) string, allowCompositeTexts bool, compositeDelimiter string) (*HtmlTable, error) {
 	// first assert we are a tableNode
 	if tableNode == nil {
