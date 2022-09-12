@@ -42,7 +42,7 @@ if len(divs) == 0 {
 }
 ````
 
-***Get all elements containing the class name 'button'***
+***Get all elements containing the class name "button"***
 
 ````go
 buttons := GetNodesByCondition(htmlNode, MakeByClassNameCondition("button"))
@@ -51,7 +51,7 @@ if len(divs) == 0 {
 }
 ````
 
-***Get first element that has attribute 'name' with value 'Datum'***
+***Get first element that has attribute "name" with value "Datum"***
 
 ````go
 datum := GetNodeByCondition(htmlNode, MakeByAttributeNameAndValueCondition("name", "Datum"))
@@ -62,11 +62,11 @@ if datum == nil {
 
 **Combining conditions**
 
-***Get first element with class name 'clickable' that has as tag 'button'.***
+***Get first element with class name "clickable" that has as tag "button".***
 
 ````go
 element := GetNodeByCondition(htmlNode, func(node *html.Node) bool {
- return MakeByClassNameCondition('clickable')(node) && MakeByTagNameCondition('button')(node)
+ return MakeByClassNameCondition("clickable")(node) && MakeByTagNameCondition("button")(node)
 })
 ````
 
