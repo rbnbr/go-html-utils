@@ -15,7 +15,7 @@ Main Features:
 
 ````go
 log.Printf("GET: '%s'\n", someUrl.String())
-res, err := http.DefaultClient.Get(someUrl)
+res, err := http.DefaultClient.Get(someUrl.String())
 if err != nil {
 	return err
 }
