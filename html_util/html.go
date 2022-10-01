@@ -235,7 +235,7 @@ type HtmlTable struct {
 	Index          []string              // Index, equal to TableData[:, 0] in numpy expression
 	TableData      [][]string            // All data excluding headers and index
 	normalizerFunc func(s string) string // used to normalize table content (additionally to the little regex)
-	postfix        string                // postfix for recurring keys during parsing
+	suffix         string                // suffix for recurring keys during parsing
 }
 
 // getRowByIndex
@@ -287,7 +287,7 @@ func (ht HtmlTable) GetRowByKeyNum(key string, occurrence int) ([]string, int, b
 	if occurrence == 0 {
 		return ht.GetRowByKey(key)
 	}
-	return ht.GetRowByKey(fmt.Sprintf("%v%v%v", key, ht.postfix, occurrence))
+	return ht.GetRowByKey(fmt.Sprintf("%v%v%v", key, ht.suffix, occurrence))
 }
 
 // GetRowByKey
@@ -337,7 +337,7 @@ func (ht HtmlTable) GetColumnByKeyNum(key string, occurrence int) ([]string, int
 	if occurrence == 0 {
 		return ht.GetColumnByKey(key)
 	}
-	return ht.GetColumnByKey(fmt.Sprintf("%v%v%v", key, ht.postfix, occurrence))
+	return ht.GetColumnByKey(fmt.Sprintf("%v%v%v", key, ht.suffix, occurrence))
 }
 
 // GetElementByIndex
@@ -381,10 +381,10 @@ func (ht HtmlTable) GetElementByKeys(rowKey, columnKey string) (string, int, int
 // returns "", false if at least one key is missing.
 func (ht HtmlTable) GetElementByKeysNum(rowKey, columnKey string, rowOccurrence, columnOccurrence int) (string, int, int, bool) {
 	if rowOccurrence != 0 {
-		rowKey = fmt.Sprintf("%v%v%v", rowKey, ht.postfix, rowOccurrence)
+		rowKey = fmt.Sprintf("%v%v%v", rowKey, ht.suffix, rowOccurrence)
 	}
 	if columnOccurrence != 0 {
-		columnKey = fmt.Sprintf("%v%v%v", columnKey, ht.postfix, columnOccurrence)
+		columnKey = fmt.Sprintf("%v%v%v", columnKey, ht.suffix, columnOccurrence)
 	}
 	return ht.GetElementByKeys(rowKey, columnKey)
 }
@@ -393,10 +393,10 @@ func (ht HtmlTable) GetElementByKeysNum(rowKey, columnKey string, rowOccurrence,
 // Parses a given html.Node which should point to a <table> ElementNode in a html tree to an HtmlTable Struct which
 // can be used to easily look up existing indices, headers, and values.
 // Content is set after normalizing with identity normalizer func, normalizer(s) = s.
-// we append '{postfix}_{keyCount}' to keys which appear multiple times to make them unique.
+// we append '{suffix}_{keyCount}' to keys which appear multiple times to make them unique.
 // the first occurrence does not have this.
-func ParseHtmlTable(tableNode *html.Node, hasHeaderRow bool, hasIndexColumn bool, postfix string) (*HtmlTable, error) {
-	return ParseHtmlTableWithNormalizer(tableNode, hasHeaderRow, hasIndexColumn, postfix, func(s string) string {
+func ParseHtmlTable(tableNode *html.Node, hasHeaderRow bool, hasIndexColumn bool, suffix string) (*HtmlTable, error) {
+	return ParseHtmlTableWithNormalizer(tableNode, hasHeaderRow, hasIndexColumn, suffix, func(s string) string {
 		return s
 	}, false, "")
 }
@@ -405,10 +405,10 @@ func ParseHtmlTable(tableNode *html.Node, hasHeaderRow bool, hasIndexColumn bool
 // Parses a given html.Node which should point to a <table> ElementNode in a html tree to an HtmlTable Struct which
 // can be used to easily look up existing indices, headers, and values.
 // Content is set after normalizing with normalizerFunc
-// we append '{postfix}_{keyCount}' to keys which appear multiple times to make them unique.
+// we append '{suffix}_{keyCount}' to keys which appear multiple times to make them unique.
 // the first occurrence does not have this.
 // TODO: describe the meaning of allowCompositeTexts and compositeDelimiter parameters
-func ParseHtmlTableWithNormalizer(tableNode *html.Node, hasHeaderRow bool, hasIndexColumn bool, postfix string, normalizerFunc func(string) string, allowCompositeTexts bool, compositeDelimiter string) (*HtmlTable, error) {
+func ParseHtmlTableWithNormalizer(tableNode *html.Node, hasHeaderRow bool, hasIndexColumn bool, suffix string, normalizerFunc func(string) string, allowCompositeTexts bool, compositeDelimiter string) (*HtmlTable, error) {
 	// first assert we are a tableNode
 	if tableNode == nil {
 		return nil, errors.New("node is nil")
@@ -547,8 +547,15 @@ func ParseHtmlTableWithNormalizer(tableNode *html.Node, hasHeaderRow bool, hasIn
 	}
 
 	// make headers and index unique
-	headers = slices.MakeUniqueStringSlice(headers, postfix)
-	index = slices.MakeUniqueStringSlice(index, postfix)
+	headers, err := slices.MakeUniqueStringSlice(headers, suffix)
+	if err != nil {
+		return nil, err
+	}
+
+	index, err = slices.MakeUniqueStringSlice(index, suffix)
+	if err != nil {
+		return nil, err
+	}
 
 	tableData := make([][]string, len(index)-1)
 	for i := 0; i < len(tableData); i++ {
@@ -579,7 +586,7 @@ func ParseHtmlTableWithNormalizer(tableNode *html.Node, hasHeaderRow bool, hasIn
 		Headers:   headers,
 		Index:     index,
 		TableData: tableData,
-		postfix:   postfix,
+		suffix:    suffix,
 	}, nil
 }
 
