@@ -60,9 +60,24 @@ if datum == nil {
 }
 ````
 
-**Combining conditions**
+## Create arbitrary conditions & Combining conditions
+
+***Create arbitrary condition***
+````go
+element := GetNodeByCondition(htmlNode, func(node *html.Node) bool {
+	boolean := true
+	/*
+	Some arbitrary logic.
+	The @node parameter takes the value of all *html.Node elements in the tree of @htmlNode for which this function is evaluated.
+	GetNodeByCondition will return the first node, for which this function evaluates true.
+	 */
+	return boolean
+})
+````
 
 ***Get first element with class name "clickable" that has as tag "button".***
+
+Defining custom conditions also allows to combine existing conditions:
 
 ````go
 element := GetNodeByCondition(htmlNode, func(node *html.Node) bool {
